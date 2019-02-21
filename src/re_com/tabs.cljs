@@ -2,7 +2,8 @@
   (:require-macros [re-com.core :refer [handler-fn]])
   (:require [re-com.util     :refer [deref-or-value]]
             [re-com.box      :refer [flex-child-style]]
-            [re-com.validate :refer [css-style? html-attr? vector-of-maps?] :refer-macros [validate-args-macro]]))
+            [re-com.validate :refer [css-style? html-attr? vector-of-maps?] :refer-macros [validate-args-macro]]
+            [re-com.mui :as m-ui]))
 
 
 ;;--------------------------------------------------------------------------------------------------
@@ -164,3 +165,30 @@
     :class     class
     :style     style
     :attr      attr))
+
+
+;;--------------------------------------------------------------------------------------------------
+;; Component: simple-tabs
+;;--------------------------------------------------------------------------------------------------
+
+(defn simple-tabs
+  [& {:keys [model tabs on-change id-fn label-fn class style attr]
+      :or   {id-fn :id label-fn :label}
+      :as   args}]
+  {:pre [(validate-args-macro tabs-args-desc args "tabs")]}
+  (let [current  (deref-or-value model)
+        tabs     (deref-or-value tabs)
+        _        (assert (not-empty (filter #(= current (id-fn %)) tabs)) "model not found in tabs vector")]
+    [:div
+     [m-ui/app-bar
+      (merge {:class (str "rc-tabs nav nav-tabs noselect " class)
+              :style (flex-child-style "none")
+              :position :static}
+             attr)
+      [m-ui/tabs {:value current #_#_:on-change (fn [event value] (when on-change (handler-fn (on-change value))))}
+       (for [t tabs]
+         (let [id        (id-fn  t)
+               label     (label-fn  t)]
+           ^{:key id}
+           [m-ui/tab {:value id :label label :on-click (when on-change (handler-fn (on-change id)))}]))]]]))
+

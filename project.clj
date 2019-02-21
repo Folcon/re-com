@@ -13,7 +13,8 @@
                      [org.clojure/clojurescript   "1.10.439"]
                      [reagent                     "0.8.1"]
                      [org.clojure/core.async      "0.4.474"]
-                     [com.andrewmcveigh/cljs-time "0.5.2"]]
+                     [com.andrewmcveigh/cljs-time "0.5.2"]
+                     [cljsjs/material-ui "3.9.1-0"]]
 
   ;:plugins          [[lein-unpack-resources "0.1.1"]]
   ;
@@ -35,8 +36,8 @@
                                                 :nrepl-middleware [dirac.nrepl/middleware]
                                                 :init (do (require 'dirac.agent)
                                                           (dirac.agent/boot!))}
-                                 :plugins      [[lein-cljsbuild                  "1.1.5"]
-                                                [lein-figwheel                   "0.5.17"]
+                                 :plugins      [[lein-cljsbuild                  "1.1.7"]
+                                                [lein-figwheel                   "0.5.18"]
                                                 [lein-shell                      "0.5.0"]
                                                 [org.clojure/data.json           "0.2.6"]
                                                 [lein-s3-static-deploy           "0.1.1-SNAPSHOT"]

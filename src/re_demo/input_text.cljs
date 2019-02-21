@@ -84,6 +84,36 @@
                                                                    :on-change        #(reset! text-val %)
                                                                    :validation-regex @regex
                                                                    :change-on-blur?  change-on-blur?
+                                                                   :disabled?        disabled?]
+                                                                  [p "Material Design Demo"]
+                                                                  [label :label "[input-text :widget :mui ... ]"]
+                                                                  [gap :size "5px"]
+                                                                  [input-text
+                                                                   :widget           :mui
+                                                                   :model            text-val
+                                                                   :status           @status
+                                                                   :status-icon?     @status-icon?
+                                                                   :status-tooltip   @status-tooltip
+                                                                   :width            "300px"
+                                                                   :placeholder      (if @regex "enter number (99.9)" "placeholder message")
+                                                                   :on-change        #(reset! text-val %)
+                                                                   :validation-regex @regex
+                                                                   :change-on-blur?  change-on-blur?
+                                                                   :disabled?        disabled?]
+                                                                  [gap :size "20px"]
+                                                                  [label :label "[input-password :widget :mui ... ]"]
+                                                                  [gap :size "5px"]
+                                                                  [input-password
+                                                                   :widget           :mui
+                                                                   :model            text-val
+                                                                   :status           @status
+                                                                   :status-icon?     @status-icon?
+                                                                   :status-tooltip   @status-tooltip
+                                                                   :width            "300px"
+                                                                   :placeholder      (if @regex "enter number (99.9)" "placeholder message")
+                                                                   :on-change        #(reset! text-val %)
+                                                                   :validation-regex @regex
+                                                                   :change-on-blur?  change-on-blur?
                                                                    :disabled?        disabled?]]]
                                                       [v-box
                                                        :gap      "15px"

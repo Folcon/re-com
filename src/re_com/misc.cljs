@@ -5,7 +5,10 @@
             [re-com.box      :refer [h-box v-box box gap line flex-child-style align-style]]
             [re-com.validate :refer [input-status-type? input-status-types-list regex? string-or-hiccup? css-style? html-attr?
                                      number-or-string? string-or-atom? nillable-string-or-atom? throbber-size? throbber-sizes-list] :refer-macros [validate-args-macro]]
-            [reagent.core    :as    reagent]))
+            [reagent.core    :as    reagent]
+            [re-com.mui :as m-ui]))
+
+(def default-style :mui)
 
 ;; ------------------------------------------------------------------------------------
 ;;  Component: throbber
@@ -46,7 +49,7 @@
 
 (def input-text-args-desc
   [{:name :model            :required true                   :type "string/nil | atom" :validate-fn nillable-string-or-atom? :description "text of the input (can be atom or value/nil)"}
-   {:name :on-change        :required true                   :type "string -> nil"     :validate-fn fn?                      :description [:span [:code ":change-on-blur?"] " controls when it is called. Passed the current input string"] }
+   {:name :on-change        :required true                   :type "string -> nil"     :validate-fn fn?                      :description [:span [:code ":change-on-blur?"] " controls when it is called. Passed the current input string"]}
    {:name :status           :required false                  :type "keyword"           :validate-fn input-status-type?       :description [:span "validation status. " [:code "nil/omitted"] " for normal status or one of: " input-status-types-list]}
    {:name :status-icon?     :required false :default false   :type "boolean"                                                 :description [:span "when true, display an icon to match " [:code ":status"] " (no icon for nil)"]}
    {:name :status-tooltip   :required false                  :type "string"            :validate-fn string?                  :description "displayed in status icon's tooltip"}
@@ -54,13 +57,14 @@
    {:name :width            :required false :default "250px" :type "string"            :validate-fn string?                  :description "standard CSS width setting for this input"}
    {:name :height           :required false                  :type "string"            :validate-fn string?                  :description "standard CSS height setting for this input"}
    {:name :rows             :required false :default 3       :type "integer | string"  :validate-fn number-or-string?        :description "ONLY applies to 'input-textarea': the number of rows of text to show"}
-   {:name :change-on-blur?  :required false :default true    :type "boolean | atom"                                          :description [:span "when true, invoke " [:code ":on-change"] " function on blur, otherwise on every change (character by character)"] }
+   {:name :change-on-blur?  :required false :default true    :type "boolean | atom"                                          :description [:span "when true, invoke " [:code ":on-change"] " function on blur, otherwise on every change (character by character)"]}
    {:name :validation-regex :required false                  :type "regex"             :validate-fn regex?                   :description "user input is only accepted if it would result in a string that matches this regular expression"}
    {:name :disabled?        :required false :default false   :type "boolean | atom"                                          :description "if true, the user can't interact (input anything)"}
    {:name :class            :required false                  :type "string"            :validate-fn string?                  :description "CSS class names, space separated (applies to the textbox, not the wrapping div)"}
    {:name :style            :required false                  :type "CSS style map"     :validate-fn css-style?               :description "CSS styles to add or override (applies to the textbox, not the wrapping div)"}
    {:name :attr             :required false                  :type "HTML attr map"     :validate-fn html-attr?               :description [:span "HTML attributes, like " [:code ":on-mouse-move"] [:br] "No " [:code ":class"] " or " [:code ":style"] "allowed (applies to the textbox, not the wrapping div)"]}
-   {:name :input-type       :required false                  :type "keyword"           :validate-fn keyword?                 :description [:span "ONLY applies to super function 'base-input-text': either " [:code ":input"] ", " [:code ":password"] " or " [:code ":textarea"]]}])
+   {:name :input-type       :required false                  :type "keyword"           :validate-fn keyword?                 :description [:span "ONLY applies to super function 'base-input-text': either " [:code ":input"] ", " [:code ":password"] " or " [:code ":textarea"]]}
+   {:name :widget           :required false                  :type "keyword"           :validate-fn keyword?                 :description ":default or :mui to get material widgets"}])
 
 ;; Sample regex's:
 ;;  - #"^(-{0,1})(\d*)$"                   ;; Signed integer
@@ -71,7 +75,7 @@
 
 (defn- input-text-base
   "Returns markup for a basic text input label"
-  [& {:keys [model input-type] :as args}]
+  [& {:keys [model input-type widget] :or {widget :default} :as args}]
   {:pre [(validate-args-macro input-text-args-desc args "input-text")]}
   (let [external-model (reagent/atom (deref-or-value model))  ;; Holds the last known external value of model, to detect external model changes
         internal-model (reagent/atom (if (nil? @external-model) "" @external-model))] ;; Create a new atom from the model to be used internally (avoid nil)
@@ -100,7 +104,11 @@
                                     "")
                                   (when (and status status-icon?) "has-feedback"))
                       :style (flex-child-style "auto")}
-                     [(if (= input-type :password) :input input-type)
+                     [(cond
+                        (= input-type :textarea) :textarea
+                        (= widget :mui) m-ui/text-field
+                        (= input-type :password) :input
+                        :default input-type)
                       (merge
                         {:class       (str "form-control " class)
                          :type        (case input-type
@@ -252,8 +260,8 @@
 ;; ------------------------------------------------------------------------------------
 
 (def radio-button-args-desc
-  [{:name :model       :required true                 :type "anything | atom"                                 :description [:span "selected value of the radio button group. See also " [:code ":value"]] }
-   {:name :value       :required false                :type "anything"                                        :description [:span "if " [:code ":model"]  " equals " [:code ":value"] " then this radio button is selected"] }
+  [{:name :model       :required true                 :type "anything | atom"                                 :description [:span "selected value of the radio button group. See also " [:code ":value"]]}
+   {:name :value       :required false                :type "anything"                                        :description [:span "if " [:code ":model"]  " equals " [:code ":value"] " then this radio button is selected"]}
    {:name :on-change   :required true                 :type "anything -> nil"  :validate-fn fn?               :description [:span "called when the radio button is clicked. Passed " [:code ":value"]]}
    {:name :label       :required false                :type "string | hiccup"  :validate-fn string-or-hiccup? :description "the label shown to the right"}
    {:name :disabled?   :required false :default false :type "boolean | atom"                                  :description "if true, the user can't click the radio button"}

@@ -1,6 +1,6 @@
 (ns re-demo.tabs
   (:require [re-com.core             :refer [h-box v-box box gap line scroller border horizontal-tabs horizontal-bar-tabs vertical-bar-tabs
-                                             horizontal-pill-tabs vertical-pill-tabs label button single-dropdown p]]
+                                             horizontal-pill-tabs vertical-pill-tabs label button single-dropdown p simple-tabs]]
             [re-com.tabs             :refer [tabs-args-desc]]
             [re-com.util             :refer [item-for-id]]
             [re-demo.utils           :refer [panel-title title2 args-table github-hyperlink status-text]]
@@ -32,10 +32,10 @@
       [v-box
        :gap      "20px"
        :children [
-                   [p "Each of the five tab components shown below have a distinct visual style."]
-                   [p "In this demo, all five tab components share the same state, so they change in lockstep."]
-                   [p "For effect, some fake  \"Tab Contents\" (a string of text) is shown in the dotted border below."]
-                   [p "The implementation here is simple and your selection is forgotten when you change to another demo panel."]
+                  [p "Each of the five tab components shown below have a distinct visual style."]
+                  [p "In this demo, all five tab components share the same state, so they change in lockstep."]
+                  [p "For effect, some fake  \"Tab Contents\" (a string of text) is shown in the dotted border below."]
+                  [p "The implementation here is simple and your selection is forgotten when you change to another demo panel."]
                   [h-box
                    :align    :center
                    :children [[title2
@@ -89,7 +89,19 @@
                                :radius  "10px"
                                :padding "20px"
                                :margin  "10px"
-                               :child   [:p (:say-this (item-for-id @selected-tab-id tabs-definition))]]]]]])))
+                               :child   [:p (:say-this (item-for-id @selected-tab-id tabs-definition))]]]]
+
+                  [p "Material Design Demo"]
+                  [h-box
+                   :align    :center
+                   :children [[title2
+                               "[simple-tabs ... ]"
+                               {:width fn-name-width :font-size "20px"}]
+                              [simple-tabs
+                               :model     selected-tab-id
+                               :tabs      tabs-definition
+                               :on-change change-tab]]]]])))
+
 
 
 (defn remembers-demo
@@ -152,8 +164,8 @@
        :size     "auto"
        :gap      "10px"
        :children [[panel-title "Tab Components"
-                                "src/re_com/tabs.cljs"
-                                "src/re_demo/tabs.cljs"]
+                   "src/re_com/tabs.cljs"
+                   "src/re_demo/tabs.cljs"]
 
 
                   [h-box

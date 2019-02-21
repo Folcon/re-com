@@ -82,6 +82,7 @@
 (def vertical-bar-tabs          tabs/vertical-bar-tabs)
 (def horizontal-pill-tabs       tabs/horizontal-pill-tabs)
 (def vertical-pill-tabs         tabs/vertical-pill-tabs)
+(def simple-tabs                tabs/simple-tabs)
 
 (def label                      text/label)
 (def p                          text/p)
